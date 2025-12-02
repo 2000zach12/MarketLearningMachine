@@ -80,7 +80,7 @@ X_test_scaled  = scaler.transform(X_test)
 
 from sklearn.neighbors import KNeighborsRegressor
 
-knn = KNeighborsRegressor(n_neighbors=10)
+knn = KNeighborsRegressor(n_neighbors=1)
 knn.fit(X_train_scaled, Y_train)
 
 Y_pred = knn.predict(X_test_scaled)
@@ -94,3 +94,50 @@ r2 = r2_score(Y_test, Y_pred)
 print("MAE:", mae)
 print("RMSE:", rmse)
 print("R²:", r2)
+
+from sklearn.neighbors import KNeighborsRegressor
+# Fitting KNN regression to the Training set
+
+KNN_regression = KNeighborsRegressor(n_neighbors=1)
+KNN_regression.fit(X_train, Y_train)
+
+# Predicting the Test set results
+Y_hat = KNN_regression.predict(X_test)
+
+sns.scatterplot(x=Y_test, y=Y_hat, alpha=0.6)
+sns.lineplot(Y_test)
+
+
+print(KNN_regression.score(X_train, Y_train))
+
+print(X_train.shape)
+
+
+plt.xlabel('Date', fontsize=14)
+plt.ylabel('Price', fontsize=14)
+plt.title('Actual vs Predicted  wage (test set)', fontsize=17)
+plt.show()
+
+
+from sklearn.model_selection import cross_val_score
+
+RMSE_CV = []
+RMSE_test = []
+
+k = 40
+
+for i in range(1, k):
+    KNN_i = KNeighborsRegressor(n_neighbors=i)
+    KNN_i.fit(X_train, Y_train)
+    RMSE_i = np.sqrt(
+        np.mean(-1 * cross_val_score(estimator=KNN_i, X=X_train, y=Y_train, cv=10, scoring="neg_mean_squared_error")))
+    RMSE_CV.append(RMSE_i)
+
+    RMSE_test.append(np.sqrt(np.mean(np.square(Y_test - KNN_i.predict(X_test)))))
+
+optimal_k = pd.DataFrame({'RMSE_CV': np.round(RMSE_CV, 2), 'RMSE_test': np.round(RMSE_test, 2), 'K': range(1, k)})
+
+
+print(optimal_k.head(40))
+
+
