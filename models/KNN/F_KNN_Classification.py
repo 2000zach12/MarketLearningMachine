@@ -36,12 +36,12 @@ def dfCleaner(dfUnclean):
     # convert volume to int
     dfUnclean["Volume"] = dfUnclean["Volume"].astype(int)
 
-    df = dfUnclean
-    return df
+    dfClean = dfUnclean
+    return dfClean
 
-def create_lagged_features(df, lags, cols):
+def create_delayed_lagged_features(df, lags, cols,delay):
     for col in cols:
-        for i in range(1,lags+1):
+        for i in range(1+delay,lags+1+delay):
             df[f'{col}_lag_{i}'] = df[col].shift(i)
 
     return df
@@ -51,3 +51,48 @@ def create_lagged_features(df, lags, cols):
 
 
 df = dfCleaner(dfUnclean)
+delay = 5
+lags = 5
+lag_features = ['Close','Volume','Open']
+df = create_delayed_lagged_features(df, lags=lags, cols=lag_features,delay=delay)
+
+#Drop Nan
+drop=delay+lags
+df=df[drop:]
+
+target = 'Close'
+
+
+Y = df[target]
+X = df[[c for c in df.columns if "_lag_" in c]+ [c for c in df.columns if c not in lag_features and c not in ["Date", "Adj Close","High","Low", target]]]
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, Y_train, Y_test = train_test_split(
+    X, Y, test_size=0.20, shuffle=False)
+
+
+
+
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled  = scaler.transform(X_test)
+
+from sklearn.neighbors import KNeighborsRegressor
+
+knn = KNeighborsRegressor(n_neighbors=1)
+knn.fit(X_train_scaled, Y_train)
+
+Y_pred = knn.predict(X_test_scaled)
+
+
+
+mae = mean_absolute_error(Y_test, Y_pred)
+rmse = np.sqrt(mean_squared_error(Y_test, Y_pred))
+r2 = r2_score(Y_test, Y_pred)
+
+print("MAE:", mae)
+print("RMSE:", rmse)
+print("R²:", r2)
