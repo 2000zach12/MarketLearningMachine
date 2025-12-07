@@ -23,12 +23,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "F_Regression.md",
+                "file": "Data that might be Useful.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "F_Regression"
+              "title": "Data that might be Useful"
             }
           }
         ],
@@ -42,10 +42,14 @@
             "id": "f2468cc9932c62e4",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph view"
+              "type": "markdown",
+              "state": {
+                "file": "README.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "README"
             }
           }
         ]
@@ -208,12 +212,12 @@
       "bases:Create new base": false
     }
   },
-  "active": "65215cce1c341aa4",
+  "active": "c05d077289e2ca05",
   "lastOpenFiles": [
-    "Untitled.canvas",
-    "Untitled.base",
     "README.md",
     "Data that might be Useful.md",
-    "F_Regression.md"
+    "F_Regression.md",
+    "Untitled.canvas",
+    "Untitled.base"
   ]
 }
